@@ -1,6 +1,9 @@
 # @celomx/wallet-embed
 
-Vendor-agnostic **embedded wallet** for React apps. One public API; only one vendor SDK is mounted at a time.
+Vendor-agnostic **embedded wallet** for React. One public API; only one vendor SDK is mounted at a time.
+
+**npm:** [`@celomx/wallet-embed`](https://www.npmjs.com/package/@celomx/wallet-embed)  
+**Source:** [CeloMX/wallet-agnostic-provider-sdk](https://github.com/CeloMX/wallet-agnostic-provider-sdk)
 
 Supports:
 
@@ -13,13 +16,11 @@ Host apps never import Privy / thirdweb / WaaP hooks. Bridges publish an EIP-119
 
 ## Install
 
-From npm (after you publish):
-
 ```bash
 npm install @celomx/wallet-embed
 ```
 
-From this GitHub repo (source, until npm is live):
+From GitHub (source):
 
 ```bash
 npm install github:CeloMX/wallet-agnostic-provider-sdk
@@ -29,15 +30,14 @@ Then install **only the vendor SDKs you enable**:
 
 ```bash
 npm install react react-dom ethers
-# pick any subset:
-npm install @privy-io/react-auth
-npm install thirdweb
-npm install @human.tech/waap-sdk
+npm install @privy-io/react-auth   # if using Privy
+npm install thirdweb               # if using thirdweb
+npm install @human.tech/waap-sdk   # if using human.tech
 ```
 
-Next.js App Router: add `transpilePackages: ['@celomx/wallet-embed']` in `next.config.js`.
+**Next.js App Router:** add `transpilePackages: ['@celomx/wallet-embed']` in `next.config.js`. Do not import this package from Server Components except as a client child.
 
-Vite / CRA: no extra config. Do not import this package from Server Components except as a client child.
+Vite / CRA: no extra config.
 
 ## 5-minute integration
 
@@ -121,7 +121,7 @@ export function ConnectButton() {
 
 Wrap the tree **above** any component that calls `useWallet()`.
 
-### What you get from `useWallet()`
+### `useWallet()`
 
 ```ts
 wallet.connect()
@@ -148,6 +148,16 @@ Bring your own picker: `getStandaloneProviders()` + `waitForWalletSession(provid
 | `chain` | Target chain (defaults to Celo mainnet) |
 | `credentials` | Vendor keys. WaaP email/phone/social works with **zero** keys |
 
+Typical env vars (you pass them into `credentials` / `chain` — the SDK does not read `process.env` itself):
+
+```bash
+NEXT_PUBLIC_PRIVY_APP_ID=
+NEXT_PUBLIC_THIRDWEB_CLIENT_ID=
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=   # optional, WaaP external wallets
+NEXT_PUBLIC_WAAP_USE_STAGING=false
+NEXT_PUBLIC_CELO_RPC_URL=https://forno.celo.org
+```
+
 Same email ≠ same address across vendors (different key systems).
 
 ## CSP
@@ -167,10 +177,22 @@ MiniPay skips the shell and talks to `window.ethereum`.
 
 ## Publish to npm
 
-From this repo root, after `npm login` (use the **celomx** npm org):
+Package name: **`@celomx/wallet-embed`** (npm org: [celomx](https://www.npmjs.com/settings/celomx/packages)).
 
 ```bash
+npm login
+npm publish --access public
+```
+
+If the CLI hangs on browser/passkey auth, create a granular access token with publish permission and:
+
+```bash
+npm config set //registry.npmjs.org/:_authToken YOUR_TOKEN
 npm publish --access public
 ```
 
 Bump `version` in `package.json` for later releases.
+
+## License
+
+MIT
