@@ -1,0 +1,61 @@
+{
+  "name": "@neonpay/wallet-embed",
+  "version": "0.1.0",
+  "description": "Vendor-agnostic embedded wallet SDK. Mount Privy, thirdweb, or human.tech WaaP — one at a time — behind a single React API. MiniPay auto-detects.",
+  "license": "MIT",
+  "author": "Celo MX",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CeloMX/wallet-agnostic-provider-sdk.git"
+  },
+  "homepage": "https://github.com/CeloMX/wallet-agnostic-provider-sdk",
+  "bugs": {
+    "url": "https://github.com/CeloMX/wallet-agnostic-provider-sdk/issues"
+  },
+  "keywords": [
+    "wallet",
+    "embedded-wallet",
+    "privy",
+    "thirdweb",
+    "waap",
+    "human.tech",
+    "minipay",
+    "celo",
+    "react"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "**/*.tsx"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "ethers": "^6.0.0",
+    "@privy-io/react-auth": "^2.0.0 || ^3.0.0",
+    "thirdweb": "^5.0.0",
+    "@human.tech/waap-sdk": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@privy-io/react-auth": {
+      "optional": true
+    },
+    "thirdweb": {
+      "optional": true
+    },
+    "@human.tech/waap-sdk": {
+      "optional": true
+    }
+  }
+}
