@@ -1,5 +1,5 @@
 {
-  "name": "@neonpay/wallet-embed",
+  "name": "@celomx/wallet-embed",
   "version": "0.1.0",
   "description": "Vendor-agnostic embedded wallet SDK. Mount Privy, thirdweb, or human.tech WaaP — one at a time — behind a single React API. MiniPay auto-detects.",
   "license": "MIT",

@@ -1,4 +1,4 @@
-# @neonpay/wallet-embed
+# @celomx/wallet-embed
 
 Vendor-agnostic **embedded wallet** for React apps. One public API; only one vendor SDK is mounted at a time.
 
@@ -16,7 +16,7 @@ Host apps never import Privy / thirdweb / WaaP hooks. Bridges publish an EIP-119
 From npm (after you publish):
 
 ```bash
-npm install @neonpay/wallet-embed
+npm install @celomx/wallet-embed
 ```
 
 From this GitHub repo (source, until npm is live):
@@ -35,7 +35,7 @@ npm install thirdweb
 npm install @human.tech/waap-sdk
 ```
 
-Next.js App Router: add `transpilePackages: ['@neonpay/wallet-embed']` in `next.config.js`.
+Next.js App Router: add `transpilePackages: ['@celomx/wallet-embed']` in `next.config.js`.
 
 Vite / CRA: no extra config. Do not import this package from Server Components except as a client child.
 
@@ -50,7 +50,7 @@ import {
   ProviderPicker,
   CELO_MAINNET,
   waitForWalletSession,
-} from '@neonpay/wallet-embed';
+} from '@celomx/wallet-embed';
 import { useState } from 'react';
 
 export function WalletRoot({ children }: { children: React.ReactNode }) {
@@ -167,7 +167,7 @@ MiniPay skips the shell and talks to `window.ethereum`.
 
 ## Publish to npm
 
-From this repo root, after `npm login` (create the `@neonpay` org on npm if needed):
+From this repo root, after `npm login` (use the **celomx** npm org):
 
 ```bash
 npm publish --access public
