@@ -67,6 +67,14 @@ const WaapProviderWrapper = loadWalletSdk('WaaP', () =>
   import('./WaapProvider').then((m) => ({ default: m.WaapProviderWrapper }))
 );
 
+/** Warm SDK chunks so provider switches do not hit the ready timeout. */
+export function preloadWalletSdk(provider?: StandaloneWalletProviderType) {
+  const loadAll = !provider;
+  if (loadAll || provider === 'privy') void import('./PrivyProvider');
+  if (loadAll || provider === 'thirdweb') void import('./ThirdwebProvider');
+  if (loadAll || provider === 'waap') void import('./WaapProvider');
+}
+
 type BoundaryProps = {
   provider: StandaloneWalletProviderType;
   onChunkError: (provider: StandaloneWalletProviderType) => void;
@@ -98,39 +106,33 @@ class WalletSdkErrorBoundary extends Component<BoundaryProps, BoundaryState> {
 
   render() {
     if (this.state.failed) {
-      const fallback = getDefaultStandaloneProvider();
-      if (fallback === 'thirdweb') {
-        return <ThirdwebProviderWrapper>{this.props.children}</ThirdwebProviderWrapper>;
-      }
-      if (fallback === 'waap') {
-        return <WaapProviderWrapper>{this.props.children}</WaapProviderWrapper>;
-      }
-      return <PrivyProviderWrapper>{this.props.children}</PrivyProviderWrapper>;
+      return <VendorSdkMount provider={getDefaultStandaloneProvider()} />;
     }
     return this.props.children;
   }
 }
 
-function SdkForProvider({
-  provider,
-  children,
-}: {
-  provider: StandaloneWalletProviderType;
-  children: ReactNode;
-}) {
+/**
+ * Mounts a single vendor SDK + its session bridge as a sibling of the app.
+ * The app is NOT nested inside the vendor provider, so switching providers
+ * remounts only this tiny subtree — the app (and any open modal) stays alive.
+ * Vendor login modals render through their own portals, so no app children
+ * need to live inside the provider.
+ */
+function VendorSdkMount({ provider }: { provider: StandaloneWalletProviderType }) {
   const enabled = getWalletEmbedConfig().enabledProviders;
   const selected = enabled.includes(provider) ? provider : getDefaultStandaloneProvider();
 
   let sdk: ReactNode;
   if (selected === 'thirdweb') {
-    sdk = <ThirdwebProviderWrapper>{children}</ThirdwebProviderWrapper>;
+    sdk = <ThirdwebProviderWrapper>{null}</ThirdwebProviderWrapper>;
   } else if (selected === 'waap') {
-    sdk = <WaapProviderWrapper>{children}</WaapProviderWrapper>;
+    sdk = <WaapProviderWrapper>{null}</WaapProviderWrapper>;
   } else {
-    sdk = <PrivyProviderWrapper>{children}</PrivyProviderWrapper>;
+    sdk = <PrivyProviderWrapper>{null}</PrivyProviderWrapper>;
   }
 
-  return <Suspense fallback={<>{children}</>}>{sdk}</Suspense>;
+  return <Suspense fallback={null}>{sdk}</Suspense>;
 }
 
 export function WalletSdkShell({ children }: { children: ReactNode }) {
@@ -170,8 +172,11 @@ export function WalletSdkShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <WalletSdkErrorBoundary provider={selected} onChunkError={handleChunkError}>
-      <SdkForProvider provider={selected}>{children}</SdkForProvider>
-    </WalletSdkErrorBoundary>
+    <>
+      <WalletSdkErrorBoundary provider={selected} onChunkError={handleChunkError}>
+        <VendorSdkMount provider={selected} />
+      </WalletSdkErrorBoundary>
+      {children}
+    </>
   );
 }

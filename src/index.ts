@@ -56,7 +56,7 @@ export { getWalletEmbedCspSources } from './csp';
 export type { WalletEmbedCspSources } from './csp';
 
 export { WalletEmbedProvider } from './react/WalletEmbedProvider';
-export { WalletSdkShell } from './react/WalletSdkShell';
+export { WalletSdkShell, preloadWalletSdk } from './react/WalletSdkShell';
 export { useWallet } from './react/useWallet';
 export type { UseWalletReturn } from './react/useWallet';
 export { ProviderPicker } from './react/ProviderPicker';
