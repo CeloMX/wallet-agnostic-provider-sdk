@@ -8,7 +8,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { JsonRpcProvider, Contract } from 'ethers';
 import { getWalletEmbedConfig } from '../config';
-import { getEnvironment } from '../detection';
+import { getEnvironment, isMiniPayEnvironment } from '../detection';
 import { ERC20_ABI, encodeTransfer } from '../erc20';
 import { getWalletProvider } from '../providers';
 import { sendWalletTransaction } from '../recoverTxHash';
@@ -144,9 +144,9 @@ export function useWallet() {
   useEffect(() => {
     if (!provider) return;
 
-    const env = getEnvironment();
-
-    if (env === 'minipay' && provider.getType() === 'minipay') {
+    // MiniPay mini-app: auto-connect injected provider (per MiniPay project-setup docs).
+    // Web: only restore an existing embedded-wallet session — never poke window.ethereum.
+    if (isMiniPayEnvironment() && provider.getType() === 'minipay') {
       void connect();
     } else {
       void checkConnection();

@@ -10,17 +10,10 @@ export function isMiniPayEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
   if (!getWalletEmbedConfig().detectMiniPay) return false;
 
+  // MiniPay docs: injected provider is window.ethereum with isMiniPay set.
+  // Do not use UA, window.minipay, or selectedAddress — those false-positive on web + Rabby.
   const ethereum = (window as Window & { ethereum?: { isMiniPay?: boolean } }).ethereum;
-  if (ethereum?.isMiniPay === true) return true;
-
-  if ((window as Window & { minipay?: unknown }).minipay) return true;
-
-  const userAgent = navigator.userAgent.toLowerCase();
-  if (userAgent.includes('minipay') || userAgent.includes('opera mini')) {
-    return true;
-  }
-
-  return false;
+  return ethereum?.isMiniPay === true;
 }
 
 export function getEnvironment(): Environment {
